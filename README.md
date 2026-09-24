@@ -331,18 +331,6 @@ Documented in detail in [`docs/architecture.md`](docs/architecture.md), summariz
    right tool for correctness testing; the evaluation suite's job is a stable, repeatable
    metrics snapshot, which a stateful task would compromise.
 
-## Future improvements
 
-- Move execution to a background task/queue (e.g. `arq`/Celery) with WebSocket/SSE trace
-  streaming, enabling real-time progress bars and a working `/agent/stop`.
-- Ground the LLM's *initial* plan in a live DOM snapshot too (currently only re-planning
-  gets one, since planning happens before the browser opens) - e.g. by doing one cheap
-  navigate+inspect before the main planning call, at the cost of a slightly more complex
-  planning/execution boundary.
-- Add a frontend test suite (Vitest + Testing Library, or Playwright component tests).
-- Add more registered API integrations beyond the single demo Invoice API, to exercise the
-  API registry with a real routing decision between multiple candidate APIs.
-- Add a CI workflow that runs `scripts/verify_clean_env.sh` (or an equivalent) on every push,
-  so clean-machine verification happens continuously rather than only when explicitly run.
 - Support payment refunds/voids (the current model only supports adding payments, never
   reversing one) and multi-currency amounts.
