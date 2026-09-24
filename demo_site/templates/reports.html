@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+<div class="cards">
+  <div class="stat-card"><div class="stat-value">Rs. {{ "%.2f"|format(total) }}</div><div class="stat-label">Total Invoiced</div></div>
+  <div class="stat-card"><div class="stat-value">Rs. {{ "%.2f"|format(unpaid) }}</div><div class="stat-label">Unpaid</div></div>
+</div>
+{% endblock %}

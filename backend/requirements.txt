@@ -1,0 +1,20 @@
+fastapi>=0.115,<0.150
+uvicorn[standard]>=0.30,<0.55
+sqlalchemy>=2.0,<2.1
+pydantic>=2.8,<2.14
+httpx>=0.27,<0.29
+# Playwright is pinned EXACTLY (not a range): unlike most libraries, its
+# browser binaries are tightly version-coupled to the pip package version -
+# `playwright install chromium` downloads whatever build the installed
+# pip version demands. A range here can silently resolve to a newer
+# version whose browser build isn't cached/available yet, which is exactly
+# the kind of "works today, breaks on a fresh machine tomorrow" bug this
+# pin exists to prevent (see scripts/verify_clean_env.sh and README
+# "Known limitations" for how this was actually caught during review).
+playwright==1.56.0
+python-multipart>=0.0.9
+Jinja2>=3.1,<3.2
+itsdangerous>=2.1
+pytest>=8.0,<10.0
+pytest-asyncio>=0.24,<2.0
+pytest-timeout>=2.3,<3.0

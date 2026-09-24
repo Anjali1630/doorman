@@ -1,0 +1,73 @@
+# NOTE ON VALIDATION: This compose file was written and reviewed against the
+# same three services that were manually run and verified working (backend,
+# demo_site, frontend), and the healthcheck commands below were run manually
+# against those live services to confirm they return the expected status.
+# It has NOT been runtime-validated with `docker compose up --build` itself,
+# because no Docker daemon was available in the sandbox this project was
+# built in. `depends_on: condition: service_healthy` below means backend
+# won't start until demo_site actually answers /api/status (not just until
+# its container process exists), and frontend won't start until backend
+# answers /api/health - this removes the startup-ordering race the previous
+# version of this file had. If something doesn't come up cleanly, the
+# manually-verified path in README.md#installation (./scripts/run_dev.sh)
+# is the fallback known to work.
+version: "3.9"
+
+services:
+  demo_site:
+    build:
+      context: .
+      dockerfile: demo_site/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      DEMO_SITE_USERNAME: ${DEMO_SITE_USERNAME:-demo}
+      DEMO_SITE_PASSWORD: ${DEMO_SITE_PASSWORD:-demo1234}
+      INVOICE_API_KEY: ${INVOICE_API_KEY:-demo-invoice-api-key}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/api/status', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      start_period: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openrouter/free}
+      DEMO_SITE_BASE_URL: http://demo_site:8001
+      DEMO_SITE_USERNAME: ${DEMO_SITE_USERNAME:-demo}
+      DEMO_SITE_PASSWORD: ${DEMO_SITE_PASSWORD:-demo1234}
+      INVOICE_API_KEY: ${INVOICE_API_KEY:-demo-invoice-api-key}
+      ALLOWED_DOMAINS: demo_site,localhost,127.0.0.1
+      FRONTEND_ORIGIN: http://localhost:5173
+      PLAYWRIGHT_HEADLESS: "true"
+    depends_on:
+      demo_site:
+        condition: service_healthy
+    volumes:
+      - backend_data:/app/backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      start_period: 15s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend_data:

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Invoice {{ invoice.id }}{% endblock %}
+{% block content %}
+<h1>Invoice {{ invoice.id }}</h1>
+{% if payment_error %}<div class="error" data-testid="payment-error" id="payment-error">{{ payment_error }}</div>{% endif %}
+<div class="detail-card">
+  <p><strong>Customer:</strong> <span data-testid="customer-name">{{ customer.name if customer else "Unknown" }}</span></p>
+  <p><strong>Email:</strong> <span data-testid="customer-email">{{ customer.email if customer else "-" }}</span></p>
+  <p><strong>Date:</strong> {{ invoice.date }}</p>
+  <p><strong>Amount:</strong> <span data-testid="invoice-amount">Rs. {{ "%.2f"|format(invoice.total_amount) }}</span></p>
+  <p><strong>Status:</strong>
+    <span class="badge badge-{{ invoice.status }}" data-testid="invoice-status">{{ status_labels[invoice.status] }}</span>
+  </p>
+
+  <div class="amount-grid">
+    <div class="amount-tile">
+      <div class="label">Total</div>
+      <div class="value" data-testid="total-amount">Rs. {{ "%.2f"|format(invoice.total_amount) }}</div>
+    </div>
+    <div class="amount-tile">
+      <div class="label">Paid</div>
+      <div class="value" data-testid="paid-amount">Rs. {{ "%.2f"|format(invoice.paid_amount) }}</div>
+    </div>
+    <div class="amount-tile">
+      <div class="label">Remaining</div>
+      <div class="value" data-testid="remaining-amount">Rs. {{ "%.2f"|format(invoice.remaining_amount) }}</div>
+    </div>
+  </div>
+
+  <a role="button" class="btn" id="download-invoice-btn" href="/invoices/{{ invoice.id }}/download">Download Invoice</a>
+
+  {% if invoice.remaining_amount > 0 %}
+  <form method="post" action="/invoices/{{ invoice.id }}/payments" class="payment-form" id="record-payment-form">
+    <label for="payment_amount">Payment Amount (Rs.)</label>
+    <input id="payment_amount" name="payment_amount" type="text" inputmode="decimal"
+           value="{{ payment_form.payment_amount if payment_form else '' }}" required />
+
+    <label for="payment_date">Payment Date</label>
+    <input id="payment_date" name="payment_date" type="date"
+           value="{{ payment_form.payment_date if payment_form else today }}" required />
+
+    <button type="submit" class="btn" id="record-payment-btn" role="button">Record Payment</button>
+  </form>
+  {% else %}
+  <p class="muted small" style="margin-top:14px;">This invoice is fully paid - no further payment can be recorded.</p>
+  {% endif %}
+
+  <h2 style="font-size:15px; margin-top:22px; margin-bottom:8px;">Payment History</h2>
+  {% if invoice.payments %}
+  <table class="payment-history" id="payment-history-table">
+    <thead><tr><th>Date</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for p in invoice.payments %}
+      <tr data-payment-index="{{ loop.index0 }}">
+        <td>{{ p.date }}</td>
+        <td>Rs. {{ "%.2f"|format(p.amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted small">No payments recorded yet.</p>
+  {% endif %}
+</div>
+<p><a href="/invoices">&larr; Back to invoices</a></p>
+{% endblock %}

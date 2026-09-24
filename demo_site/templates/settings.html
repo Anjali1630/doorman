@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h1>Settings</h1>
+<p>Invoice API status: <strong>{{ "ENABLED" if api_enabled else "DISABLED" }}</strong></p>
+<form method="post" action="/settings/toggle-api">
+  <button type="submit" class="btn">{{ "Disable API (force browser fallback)" if api_enabled else "Enable API" }}</button>
+</form>
+<p class="muted small">Use this to demonstrate the agent falling back to Playwright when the Invoice API is unavailable.</p>
+{% endblock %}

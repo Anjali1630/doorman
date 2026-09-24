@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Demo Business Portal{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Demo Business Portal</div>
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/invoices">Invoices</a>
+      <a href="/customers">Customers</a>
+      <a href="/reports">Reports</a>
+      <a href="/settings">Settings</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

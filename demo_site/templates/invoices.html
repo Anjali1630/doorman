@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Invoices{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Invoices</h1>
+  <a href="/invoices/new" class="btn" id="add-invoice-btn">+ Add New Invoice</a>
+</div>
+<table class="data-table" id="invoices-table">
+  <thead>
+    <tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for inv in invoices %}
+    <tr data-invoice-id="{{ inv.id }}">
+      <td>{{ inv.id }}</td>
+      <td>{{ inv.customer_name }}</td>
+      <td>{{ inv.date }}</td>
+      <td>Rs. {{ "%.2f"|format(inv.amount) }}</td>
+      <td><span class="badge badge-{{ inv.status }}">{{ status_labels[inv.status] }}</span></td>
+      <td><a href="/invoices/{{ inv.id }}">Open</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

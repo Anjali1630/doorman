@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Login - Demo Business Portal</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <h1>Demo Business Portal</h1>
+    <p class="muted">Sign in to continue</p>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post" action="/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="username" required />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+      <button type="submit">Log In</button>
+    </form>
+    <p class="muted small">Demo credentials: demo / demo1234</p>
+  </div>
+</body>
+</html>

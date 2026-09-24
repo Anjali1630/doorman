@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="cards">
+  <div class="stat-card">
+    <div class="stat-value">{{ invoice_count }}</div>
+    <div class="stat-label">Invoices</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ customer_count }}</div>
+    <div class="stat-label">Customers</div>
+  </div>
+</div>
+<p><a href="/invoices">View all invoices &rarr;</a></p>
+{% endblock %}
