@@ -1,4 +1,4 @@
-# doorman
+# Doorman
 
 An intelligent browser automation agent that takes a natural-language task ("Find all unpaid
 invoices above ₹10,000") and autonomously executes it - calling a real API directly when one
